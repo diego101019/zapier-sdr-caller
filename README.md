@@ -76,7 +76,7 @@ flowchart TD
 ---
 
 ### 📲 Make.com — Post-Call Scenario
-> Once VAPI finishes the call, a webhook fires the outcome back into Make.com. A router evaluates the result and directs the flow — a structured note is then automatically written into HubSpot with the call summary and qualification status.
+> Once VAPI finishes the call, a webhook fires the outcome back into Make.com. A structured note is then automatically written into HubSpot with the call summary and qualification status.
 
 <img width="1647" height="552" alt="image" src="https://github.com/user-attachments/assets/e6f5a7ca-4dcb-4ed9-9128-145efd59b320" />
 
@@ -104,6 +104,7 @@ https://dashboard.vapi.ai/calls/019e4797-2d12-7665-ba1d-cab2bdf951b4
 ---
 
 ## What I Learned
+
 - How to design an end-to-end automation workflow across three separate platforms
 - How AI voice agents (VAPI) handle real conversations and where they break down
 - The importance of prompt engineering for the qualification script — tone, fallback handling, and edge cases matter enormously
@@ -123,5 +124,3 @@ https://dashboard.vapi.ai/calls/019e4797-2d12-7665-ba1d-cab2bdf951b4
 ## About
 
 Built by **Diego Cortes** — B2B SaaS sales professional who builds AI-powered tools for revenue teams.
-
-[LinkedIn](https://www.linkedin.com/in/your-linkedin) · [GitHub Profile](https://github.com/diego101019)
