@@ -56,7 +56,7 @@ flowchart TD
 
 ---
 
-## Business Outcome
+## Intended Business Outcomes
 
 - ⚡ **Response time dropped to minutes** — leads called automatically, no manual trigger needed
 - 🎯 **Qualification fully automated** — AEs only speak to leads that passed the AI screen
@@ -65,8 +65,45 @@ flowchart TD
 
 ---
 
-## What I Learned
+## 📸 Demo & Screenshots
 
+### 🔁 Make.com — Trigger Scenario
+> When a new contact is created in HubSpot, Make.com fetches their details and fires an HTTP POST to VAPI to initiate the qualification call. This scenario runs silently in the background the moment a lead enters the CRM.
+
+<img width="1633" height="478" alt="image" src="https://github.com/user-attachments/assets/1d945a99-3a81-4192-9b46-743cc450a688" />
+
+
+---
+
+### 📲 Make.com — Post-Call Scenario
+> Once VAPI finishes the call, a webhook fires the outcome back into Make.com. A router evaluates the result and directs the flow — a structured note is then automatically written into HubSpot with the call summary and qualification status.
+
+<img width="1647" height="552" alt="image" src="https://github.com/user-attachments/assets/e6f5a7ca-4dcb-4ed9-9128-145efd59b320" />
+
+---
+
+### 📞 Sample Qualification Call
+> A real AI-conducted qualification call with a test lead.
+
+https://dashboard.vapi.ai/calls/019e4797-2d12-7665-ba1d-cab2bdf951b4
+---
+
+### 🗂️ HubSpot — Logged Call Note
+> The structured note automatically written back into the CRM after the call completes, including qualification status and conversation summary.
+
+<img width="1137" height="470" alt="image" src="https://github.com/user-attachments/assets/63de1b02-de09-46d3-83b8-51621b4613d1" />
+
+---
+
+### ⚙️ VAPI Configuration
+> The AI voice agent setup — model, system prompt, and call handling logic.
+
+<img width="1217" height="682" alt="image" src="https://github.com/user-attachments/assets/87d86719-41c2-4b45-8d93-45586ec1588b" />
+
+
+---
+
+## What I Learned
 - How to design an end-to-end automation workflow across three separate platforms
 - How AI voice agents (VAPI) handle real conversations and where they break down
 - The importance of prompt engineering for the qualification script — tone, fallback handling, and edge cases matter enormously
