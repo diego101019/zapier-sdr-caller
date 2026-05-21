@@ -85,7 +85,8 @@ flowchart TD
 ### 📞 Sample Qualification Call
 > A real AI-conducted qualification call with a test lead.
 
-https://dashboard.vapi.ai/calls/019e4797-2d12-7665-ba1d-cab2bdf951b4
+[019e4797-2d12-7665-ba1d-cab2bdf951b4-1779317648845-37545485-453d-4c0d-90a5-2d0fd017ffcd-mono.wav](https://github.com/user-attachments/files/28083195/019e4797-2d12-7665-ba1d-cab2bdf951b4-1779317648845-37545485-453d-4c0d-90a5-2d0fd017ffcd-mono.wav)
+
 ---
 
 ### 🗂️ HubSpot — Logged Call Note
