@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zapier SDR Caller — What We Built</title>
+  <style>
+    body { font-family: Georgia, serif; max-width: 780px; margin: 40px auto; color: #111; line-height: 1.6; font-size: 15px; }
+    h1 { font-size: 22px; border-bottom: 2px solid #111; padding-bottom: 8px; }
+    h2 { font-size: 17px; margin-top: 32px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+    h3 { font-size: 15px; margin-top: 20px; margin-bottom: 4px; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th, td { border: 1px solid #ccc; padding: 7px 12px; text-align: left; font-size: 14px; }
+    th { background: #f4f4f4; }
+    code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; font-size: 13px; font-family: monospace; }
+    pre { background: #f4f4f4; padding: 14px; border-radius: 4px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+    ul, ol { margin: 8px 0; padding-left: 24px; }
+    li { margin-bottom: 4px; }
+    .label { font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h1>Zapier SDR Caller — What We Built</h1>
+
+<p>
+  A no-code Zapier automation that replicates a production Make.com workflow: when a HubSpot deal moves to a specific pipeline stage, an AI voice agent (Vapi) automatically calls the prospect, runs a qualifying conversation, and logs the call summary and transcript back to HubSpot as a call engagement note.
+</p>
+<p>
+  No application code was written. The entire project is Zap configuration, Vapi assistant configuration, and HubSpot configuration.
+</p>
+
+<h2>Tools</h2>
+<table>
+  <tr><th>Tool</th><th>Role</th></tr>
+  <tr><td>Zapier</td><td>Orchestration — 2 Zaps</td></tr>
+  <tr><td>Vapi</td><td>AI voice agent (existing assistant, already configured)</td></tr>
+  <tr><td>HubSpot</td><td>CRM — deal stages, contacts, call engagement notes</td></tr>
+  <tr><td>Webhooks by Zapier</td><td>Outbound POST to Vapi; inbound Catch Hook from Vapi</td></tr>
+  <tr><td>Formatter by Zapier</td><td>Phone number normalization + call note body templating</td></tr>
+</table>
+
+<h2>Architecture — 2 Zaps</h2>
+
+<pre>
+HubSpot Deal (stage change)
+  → deal ID, associated contact ID
+    → contact phone number (via HubSpot lookup)
+      → Vapi call triggered (deal ID passed in metadata)
+        → call ends, Vapi webhook fires (deal ID in payload)
+          → HubSpot call note created on deal
+</pre>
+
+<h3>Zap 1 — "Trigger Vapi Call on Deal Stage Change"</h3>
+<ul>
+  <li><span class="label">Trigger:</span> HubSpot — Updated Deal → Filter: <code>dealstage</code> equals <code><your-hubspot-deal-stage-id></code></li>
+  <li><span class="label">Action 1:</span> HubSpot — Find Associated Contact (gets phone number from the deal's linked contact)</li>
+  <li><span class="label">Action 2:</span> Webhooks by Zapier — POST to <code>https://api.vapi.ai/call/phone</code></li>
+</ul>
+
+<p>Vapi POST body:</p>
+<pre>{
+  "assistantId": "<your-vapi-assistant-id>",
+  "phoneNumberId": "<your-vapi-phone-number-id>",
+  "customer": {
+    "number": "&lt;phone from contact lookup&gt;",
+    "name": "&lt;contact name&gt;"
+  },
+  "metadata": {
+    "hubspot_deal_id": "&lt;deal ID from trigger&gt;",
+    "hubspot_contact_id": "&lt;contact ID from Action 1&gt;"
+  }
+}</pre>
+
+<p>The <code>metadata</code> object rides with the call and comes back in the Vapi webhook — this is how Zap 2 knows which HubSpot deal to update.</p>
+
+<h3>Zap 2 — "Log Vapi Call Result to HubSpot"</h3>
+<ul>
+  <li><span class="label">Trigger:</span> Webhooks by Zapier — Catch Hook (URL: <code><your-zapier-webhook-url></code>)</li>
+  <li><span class="label">Filter:</span> Only continue when <code>message.type</code> equals <code>end-of-call-report</code></li>
+  <li><span class="label">Action 1:</span> Formatter by Zapier — build structured note from transcript, summary, and disposition</li>
+  <li><span class="label">Action 2:</span> HubSpot — Create Engagement (Call) on the deal</li>
+</ul>
+
+<p>Key fields extracted from the Vapi webhook payload:</p>
+<ul>
+  <li><code>message.call.metadata.hubspot_deal_id</code> — which deal to update</li>
+  <li><code>message.summary</code> — AI-generated call summary</li>
+  <li><code>message.transcript</code> — full call transcript</li>
+  <li><code>message.endedReason</code> — disposition (e.g., customer-ended-call)</li>
+  <li><code>message.analysis.successEvaluation</code> — Vapi's qualified/not-qualified assessment</li>
+  <li><code>message.durationSeconds</code> — converted to ms for HubSpot engagement duration</li>
+</ul>
+
+<p>HubSpot engagement is created as type <strong>Call</strong>, direction <strong>Outbound</strong>, status <strong>Completed</strong>, associated to the deal by ID.</p>
+
+<h2>Key Technical Decisions &amp; Gotchas</h2>
+
+<ol>
+  <li><strong>Build Zap 2 first.</strong> You need the Catch Hook URL before you can register it in Vapi, and you need it registered before Zap 1 can be end-to-end tested.</li>
+  <li><strong>HubSpot deal trigger doesn't include contact data.</strong> Zapier's native deal trigger gives you the deal but not the associated contact — a separate "Find Associated Contact" lookup step is required, adding to task usage.</li>
+  <li><strong>Polling delay.</strong> Zapier polls HubSpot every 5–15 minutes (not instant). Mitigation: use a HubSpot Workflow to push a webhook to a Zapier Catch Hook instead, making Zap 1 event-driven.</li>
+  <li><strong>Phone number format.</strong> Vapi requires E.164 format (<code>+15551234567</code>); HubSpot stores numbers inconsistently. Formatter by Zapier normalizes this between the contact lookup and the Vapi POST.</li>
+  <li><strong>Vapi fires multiple event types</strong> to the same server URL (call.started, transcript chunks, end-of-call-report). A Filter step in Zap 2 gates on <code>end-of-call-report</code> to avoid multiple Zap runs per call.</li>
+  <li><strong>Zapier's field mapper needs a real sample.</strong> To map nested fields like <code>message.call.metadata.hubspot_deal_id</code>, Zapier needs to have seen the payload. Workaround: POST a mock <code>end-of-call-report</code> payload via curl/Postman to the Catch Hook URL to train the field mapper before making a live call.</li>
+  <li><strong>Duplicate call prevention.</strong> If a deal stage is toggled back and forward, Zap 1 fires again. Solution: add a HubSpot deal property (<code>ai_call_triggered</code>), filter in Zap 1 to halt if it's already set, then update it after triggering the call.</li>
+  <li><strong>Task budget.</strong> ~3 tasks per Zap run → ~6 tasks total per prospect called.</li>
+</ol>
+
+<h2>Credentials &amp; IDs</h2>
+<table>
+  <tr><th>Key</th><th>Value</th></tr>
+  <tr><td>Vapi Assistant ID</td><td><code><your-vapi-assistant-id></code></td></tr>
+  <tr><td>Vapi Phone Number ID</td><td><code><your-vapi-phone-number-id></code></td></tr>
+  <tr><td>HubSpot Trigger Stage ID</td><td><code><your-hubspot-deal-stage-id></code></td></tr>
+  <tr><td>Zap 2 Catch Hook URL</td><td><code><your-zapier-webhook-url></code></td></tr>
+</table>
+
+<h2>Open Decisions</h2>
+<ul>
+  <li>Which HubSpot phone field to prefer: <code>mobilephone</code> vs <code>phone</code>?</li>
+  <li>Set Vapi server URL at the assistant level or phone number level?</li>
+  <li>Add duplicate-call prevention via deal property gate?</li>
+  <li>Should Zap 1 also advance the deal stage after triggering the call?</li>
+</ul>
+
+</body>
+</html>
