@@ -1,8 +1,6 @@
-# ai-sdr-caller
-AI-powered SDR system that qualifies leads via automated phone calls — built with Make.com, VAPI, and HubSpot
-# 🤖 AI SDR Caller
+# Zapier AI SDR Caller
 
-> An AI-powered Sales Development Representative system that automatically qualifies inbound leads via live phone calls — built by a sales professional using no-code and AI tools.
+AI-powered SDR system that qualifies leads via automated phone calls — built with Zapier, Vapi, and HubSpot
 
 ---
 
@@ -12,7 +10,9 @@ Inbound leads go cold fast. Sales teams waste hours manually calling unqualified
 
 ## The Solution
 
-I built an automated qualification system that calls every new lead within minutes of entering the CRM, conducts a live AI-powered conversation, and routes the outcome back into HubSpot — without a human touching it.
+An automated qualification system that triggers an AI phone call the moment a HubSpot deal reaches the right pipeline stage, conducts a live AI-powered conversation, and logs the outcome back into HubSpot — without a human touching it.
+
+This build uses **Zapier** as the orchestration layer, replicating a production Make.com workflow. Built as part of a Zapier evaluation to compare the two platforms side-by-side.
 
 ---
 
@@ -20,17 +20,45 @@ I built an automated qualification system that calls every new lead within minut
 
 ```mermaid
 flowchart TD
-    A[New Lead enters HubSpot CRM] --> B[Make.com detects new contact trigger]
-    B --> C[Make.com calls VAPI API]
-    C --> D[VAPI places live phone call to lead]
-    D --> E[AI conducts qualification conversation]
-    E --> F{Qualification Outcome}
-    F -->|Qualified| G[Lead moved to Active Sales Pipeline]
-    F -->|Disqualified| H[Lead marked & archived]
-    G --> I[Structured call note logged in HubSpot]
-    H --> I
-    I --> J[Human AE picks up qualified leads]
+    A[HubSpot Deal reaches target stage] --> B[Zap 1 triggers]
+    B --> C[HubSpot — Find Associated Contact]
+    C --> D[Webhooks by Zapier — POST to Vapi /call]
+    D --> E[Vapi places live phone call to lead]
+    E --> F[AI conducts qualification conversation]
+    F --> G[Call ends — Vapi fires end-of-call-report webhook]
+    G --> H[Zap 2 catches webhook]
+    H --> I[Filter: end-of-call-report only]
+    I --> J[AI by Zapier — generate structured call note]
+    J --> K[HubSpot — Create Call Engagement on Deal]
+    K --> L{Qualified?}
+    L -->|Yes| M[Slack — Notify AE channel]
+    L -->|No| N[Done — note logged, no AE alert]
 ```
+
+---
+
+## Zap Architecture
+
+### Zap 1 — HubSpot Deal Stage → Trigger Vapi Call
+
+| Step | App | Action |
+|------|-----|--------|
+| Trigger | HubSpot | Updated Deal |
+| Filter | Filter by Zapier | Only continue if `dealstage` = target stage |
+| Action 1 | HubSpot | Find Associated Contact |
+| Action 2 | Formatter by Zapier | Format phone to E.164 |
+| Action 3 | Webhooks by Zapier | POST to Vapi `/call/phone` with deal ID in metadata |
+
+### Zap 2 — Vapi Webhook → HubSpot Call Note + AE Alert
+
+| Step | App | Action |
+|------|-----|--------|
+| Trigger | Webhooks by Zapier | Catch Hook |
+| Filter | Filter by Zapier | Only continue if `message.type` = `end-of-call-report` |
+| Action 1 | AI by Zapier | Generate structured call note from transcript |
+| Action 2 | HubSpot | Create Call Engagement on Deal |
+| Filter | Filter by Zapier | Only continue if `successEvaluation` = `true` |
+| Action 3 | Slack | Send qualified lead alert to AE channel |
 
 ---
 
@@ -38,86 +66,81 @@ flowchart TD
 
 | Tool | Role |
 |------|------|
-| **HubSpot** | CRM — lead intake, pipeline management, call note logging |
-| **Make.com** | Automation layer — detects triggers, orchestrates the workflow |
-| **VAPI** | AI voice agent — places and conducts the live qualification call |
+| **HubSpot** | CRM — deal stages, contact data, call note logging |
+| **Zapier** | Orchestration — detects deal stage changes, chains actions across tools |
+| **Vapi** | AI voice agent — places and conducts the live qualification call |
+| **AI by Zapier** | Formats raw call transcript into a structured HubSpot note |
+| **Slack** | Notifies the AE channel when a lead qualifies |
+
+---
+
+## Key Data Flow
+
+The `hubspot_deal_id` passed as Vapi call metadata is the linchpin — it's how Zap 2 knows which HubSpot deal to update when the call finishes.
+
+```
+HubSpot Deal (stage change)
+  → deal ID, associated contact ID
+    → contact phone number (via HubSpot lookup)
+      → Vapi call triggered (deal ID stored in call metadata)
+        → call ends, Vapi webhook fires (deal ID in payload)
+          → AI-generated call note created on HubSpot deal
+            → AE notified in Slack (if qualified)
+```
 
 ---
 
 ## How It Works
 
-1. **Lead enters HubSpot** — via form, manual entry, or another integration
-2. **Make.com triggers** — detects the new contact and activates the scenario
-3. **VAPI call is placed** — the AI dials the lead within minutes
-4. **AI qualifies the lead** — conducts a structured conversation using a custom script
-5. **Outcome is determined** — qualified or disqualified based on conversation
-6. **HubSpot is updated** — a structured note is logged with call summary and status
-7. **Qualified leads route** to the active pipeline for human follow-up
+1. **Deal stage changes in HubSpot** — manually or via another automation
+2. **Zap 1 triggers** — detects the stage change and looks up the associated contact
+3. **Vapi call is placed** — the AI dials the lead within minutes, deal ID passed as metadata
+4. **AI qualifies the lead** — conducts a structured conversation using a custom Vapi assistant
+5. **Call ends, Vapi fires webhook** — `end-of-call-report` sent to Zap 2's catch hook URL
+6. **Zap 2 processes the result** — AI by Zapier formats a call note from the transcript
+7. **HubSpot is updated** — structured call note logged on the deal with outcome and summary
+8. **AE is alerted in Slack** — only if the lead passed qualification
 
 ---
 
-## Intended Business Outcomes
+## Screenshots
 
-- ⚡ **Response time dropped to minutes** — leads called automatically, no manual trigger needed
-- 🎯 **Qualification fully automated** — AEs only speak to leads that passed the AI screen
-- 📋 **Zero data entry** — call outcomes and notes logged directly into HubSpot
-- 🚀 **Adopted by Waybook** — I pitched this system to the founder and dev team; it is currently being productized and launching as a native Waybook feature
+### Vapi — AI Voice Agent Configuration
+> The AI voice agent setup — model, system prompt, and call handling logic.
 
----
-
-## 📸 Demo & Screenshots
-
-### 🔁 Make.com — Trigger Scenario
-> When a new contact is created in HubSpot, Make.com fetches their details and fires an HTTP POST to VAPI to initiate the qualification call. This scenario runs silently in the background the moment a lead enters the CRM.
-
-<img width="1633" height="478" alt="image" src="https://github.com/user-attachments/assets/1d945a99-3a81-4192-9b46-743cc450a688" />
-
+<img width="1217" height="682" alt="image" src="https://github.com/user-attachments/assets/87d86719-41c2-4b45-8d93-45586ec1588b" />
 
 ---
 
-### 📲 Make.com — Post-Call Scenario
-> Once VAPI finishes the call, a webhook fires the outcome back into Make.com. A structured note is then automatically written into HubSpot with the call summary and qualification status.
-
-<img width="1647" height="552" alt="image" src="https://github.com/user-attachments/assets/e6f5a7ca-4dcb-4ed9-9128-145efd59b320" />
-
----
-
-### 📞 Sample Qualification Call
-> A real AI-conducted qualification call with a test lead.
-
-[019e4797-2d12-7665-ba1d-cab2bdf951b4-1779317648845-37545485-453d-4c0d-90a5-2d0fd017ffcd-mono.wav](https://github.com/user-attachments/files/28083195/019e4797-2d12-7665-ba1d-cab2bdf951b4-1779317648845-37545485-453d-4c0d-90a5-2d0fd017ffcd-mono.wav)
-
----
-
-### 🗂️ HubSpot — Logged Call Note
+### HubSpot — Logged Call Note
 > The structured note automatically written back into the CRM after the call completes, including qualification status and conversation summary.
 
 <img width="1137" height="470" alt="image" src="https://github.com/user-attachments/assets/63de1b02-de09-46d3-83b8-51621b4613d1" />
 
 ---
 
-### ⚙️ VAPI Configuration
-> The AI voice agent setup — model, system prompt, and call handling logic.
+### Sample Qualification Call
+> A real AI-conducted qualification call with a test lead.
 
-<img width="1217" height="682" alt="image" src="https://github.com/user-attachments/assets/87d86719-41c2-4b45-8d93-45586ec1588b" />
-
+[019e4797-2d12-7665-ba1d-cab2bdf951b4-1779317648845-37545485-453d-4c0d-90a5-2d0fd017ffcd-mono.wav](https://github.com/user-attachments/files/28083195/019e4797-2d12-7665-ba1d-cab2bdf951b4-1779317648845-37545485-453d-4c0d-90a5-2d0fd017ffcd-mono.wav)
 
 ---
 
 ## What I Learned
 
-- How to design an end-to-end automation workflow across three separate platforms
-- How AI voice agents (VAPI) handle real conversations and where they break down
-- The importance of prompt engineering for the qualification script — tone, fallback handling, and edge cases matter enormously
-- How to pitch a technical concept as a business outcome to a non-technical founder
+- How to replicate a production Make.com workflow in Zapier and where the two platforms differ (polling vs. instant triggers, field mapping UX, task consumption model)
+- Zapier's HubSpot deal trigger requires an extra association lookup step — the deal object doesn't include contact data natively
+- Vapi sends multiple event types to a single webhook URL — filtering for `end-of-call-report` in Zapier is essential or you get spurious Zap runs
+- The `metadata` field on a Vapi call is the cleanest way to carry CRM context through a voice call and back into your automation
+- AI by Zapier can replace a Formatter step for unstructured-to-structured transformation, reducing prompt engineering overhead
 
 ---
 
 ## What I'd Build Next
 
+- [ ] Add a HubSpot deal property gate (`ai_call_triggered`) to prevent duplicate calls if the stage changes more than once
 - [ ] A/B test qualification scripts to optimize conversion rate
-- [ ] Add a SMS/WhatsApp fallback if the call goes unanswered
-- [ ] Connect to Slack to notify the AE in real time when a lead qualifies
+- [ ] Add an SMS/WhatsApp fallback if the call goes unanswered
 - [ ] Build a dashboard to track qualification rate, call duration, and pipeline value generated
 
 ---
