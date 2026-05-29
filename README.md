@@ -43,11 +43,11 @@ flowchart TD
 
 | Step | App | Action |
 |------|-----|--------|
-| Trigger | HubSpot | Updated Deal |
+| Trigger | HubSpot | Updated Deal (polling) |
 | Filter | Filter by Zapier | Only continue if `dealstage` = target stage |
 | Action 1 | HubSpot | Find Associated Contact |
 | Action 2 | Formatter by Zapier | Format phone to E.164 |
-| Action 3 | Webhooks by Zapier | POST to Vapi `/call/phone` with deal ID in metadata |
+| Action 3 | Webhooks by Zapier | POST to Vapi `/call/phone` with email, company, lead source, and deal ID in metadata |
 
 ### Zap 2 — Vapi Webhook → HubSpot Call Note + AE Alert
 
@@ -55,10 +55,12 @@ flowchart TD
 |------|-----|--------|
 | Trigger | Webhooks by Zapier | Catch Hook |
 | Filter | Filter by Zapier | Only continue if `message.type` = `end-of-call-report` |
-| Action 1 | AI by Zapier | Generate structured call note from transcript |
-| Action 2 | HubSpot | Create Call Engagement on Deal |
+| Action 1 | Code by Zapier | Extract real deal ID from HubSpot compound string |
+| Action 2 | AI by Zapier | Generate structured call note from transcript |
+| Action 3 | HubSpot | Create Note Engagement on Deal |
 | Filter | Filter by Zapier | Only continue if `successEvaluation` = `true` |
-| Action 3 | Slack | Send qualified lead alert to AE channel |
+| Action 4 | HubSpot | Get Deal (for deal name) |
+| Action 5 | Slack | Send qualified lead alert to AE channel |
 
 ---
 
