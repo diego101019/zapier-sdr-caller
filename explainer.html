@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zapier AI SDR Caller — Full Explainer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #1a1f2e 0%, #0f1117 60%);
+      border-bottom: 1px solid #1e2535;
+      padding: 60px 40px 50px;
+      text-align: center;
+    }
+    .hero .badge {
+      display: inline-block;
+      background: #1e3a5f;
+      color: #60a5fa;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 16px;
+      letter-spacing: -.5px;
+    }
+    .hero p {
+      font-size: 18px;
+      color: #94a3b8;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 60px 40px; }
+    .section { margin-bottom: 64px; }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #60a5fa;
+      margin-bottom: 12px;
+    }
+    .section h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 16px;
+    }
+    .section p { color: #94a3b8; margin-bottom: 16px; }
+
+    /* ── Cards ── */
+    .card {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card p { color: #94a3b8; font-size: 15px; margin-bottom: 0; }
+
+    /* ── Flow diagram ── */
+    .flow {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+    .flow-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #60a5fa;
+      margin-bottom: 24px;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+    .flow-step:last-child { margin-bottom: 0; }
+    .flow-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .flow-icon.hubspot { background: #ff7a59; }
+    .flow-icon.zapier  { background: #ff4a00; }
+    .flow-icon.vapi    { background: #7c3aed; }
+    .flow-icon.slack   { background: #4a154b; }
+    .flow-icon.code    { background: #1e3a5f; }
+    .flow-icon.ai      { background: #065f46; }
+    .flow-body h4 { font-size: 15px; font-weight: 600; color: #f1f5f9; margin-bottom: 4px; }
+    .flow-body p  { font-size: 14px; color: #64748b; margin-bottom: 0; }
+    .flow-arrow {
+      text-align: center;
+      color: #334155;
+      font-size: 20px;
+      margin: 4px 0 4px 10px;
+    }
+
+    /* ── Steps list ── */
+    .steps { list-style: none; padding: 0; }
+    .steps li {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #1e3a5f;
+      color: #60a5fa;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-body h4 { font-size: 15px; font-weight: 600; color: #f1f5f9; margin-bottom: 4px; }
+    .step-body p  { font-size: 14px; color: #94a3b8; margin-bottom: 0; }
+
+    /* ── Challenges ── */
+    .challenge {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-left: 3px solid #f59e0b;
+      border-radius: 0 12px 12px 0;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+    }
+    .challenge h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 8px;
+    }
+    .challenge .problem { font-size: 14px; color: #94a3b8; margin-bottom: 8px; }
+    .challenge .fix {
+      font-size: 13px;
+      color: #34d399;
+      background: #022c22;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    .challenge .fix strong { color: #6ee7b7; }
+
+    /* ── Code block ── */
+    pre {
+      background: #0d1117;
+      border: 1px solid #1e2535;
+      border-radius: 8px;
+      padding: 20px 24px;
+      font-size: 13px;
+      color: #7dd3fc;
+      overflow-x: auto;
+      margin: 16px 0;
+      font-family: "SF Mono", Menlo, monospace;
+      line-height: 1.6;
+    }
+
+    /* ── Tech stack pills ── */
+    .stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .pill {
+      background: #1e2535;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pill span { font-size: 16px; }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid #1e2535; margin: 48px 0; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 16px; }
+    th {
+      text-align: left;
+      padding: 10px 16px;
+      background: #1e2535;
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    th:first-child { border-radius: 8px 0 0 8px; }
+    th:last-child  { border-radius: 0 8px 8px 0; }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1e2535;
+      color: #cbd5e1;
+      vertical-align: top;
+    }
+    td:first-child { color: #f1f5f9; font-weight: 500; }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: .04em;
+    }
+    .tag.green  { background: #022c22; color: #34d399; }
+    .tag.blue   { background: #1e3a5f; color: #60a5fa; }
+    .tag.yellow { background: #2d2000; color: #fbbf24; }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="badge">AI SDR System</div>
+    <h1>Zapier AI SDR Caller</h1>
+    <p>An automated outbound call system that qualifies leads the moment a HubSpot deal reaches the right stage — built with Zapier, Vapi, and HubSpot.</p>
+    <div class="stack" style="justify-content:center; margin-top:28px;">
+      <div class="pill"><span>🟠</span> Zapier</div>
+      <div class="pill"><span>🟣</span> Vapi</div>
+      <div class="pill"><span>🔴</span> HubSpot</div>
+      <div class="pill"><span>💬</span> Slack</div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ── THE PROBLEM ── -->
+    <div class="section">
+      <div class="section-label">The Problem</div>
+      <h2>Leads go cold — fast</h2>
+      <p>Inbound leads lose interest within minutes of filling out a form. Most sales teams can't respond fast enough, and when they do, reps waste time on unqualified prospects. Hiring a full SDR team to handle qualification isn't viable for most companies.</p>
+      <p>This system solves that by placing an AI-powered phone call automatically — no human trigger required — the moment a HubSpot deal reaches the qualifying stage.</p>
+    </div>
+
+    <hr />
+
+    <!-- ── HIGH LEVEL ── -->
+    <div class="section">
+      <div class="section-label">High Level Overview</div>
+      <h2>What it does in one sentence</h2>
+      <p>When a deal moves to the right stage in HubSpot, the system automatically calls the prospect, has a live AI qualification conversation, and logs a structured note back into HubSpot — then alerts the AE in Slack if the lead qualifies.</p>
+
+      <div class="flow" style="margin-top:28px;">
+        <div class="flow-title">End-to-end flow</div>
+
+        <div class="flow-step">
+          <div class="flow-icon hubspot">🏢</div>
+          <div class="flow-body">
+            <h4>Deal stage changes in HubSpot</h4>
+            <p>A rep or automation moves the deal to the qualifying stage. This is the only human action in the entire workflow.</p>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-icon zapier">⚡</div>
+          <div class="flow-body">
+            <h4>Zap 1 triggers</h4>
+            <p>Zapier detects the stage change, looks up the associated contact, formats their phone number, and fires an API call to Vapi.</p>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-icon vapi">🎙️</div>
+          <div class="flow-body">
+            <h4>AI places a live phone call</h4>
+            <p>Vapi's AI assistant (Marcus) dials the prospect, introduces itself as calling on behalf of Positive Growth Media, and runs through a structured qualification conversation.</p>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-icon zapier">⚡</div>
+          <div class="flow-body">
+            <h4>Zap 2 processes the outcome</h4>
+            <p>When the call ends, Vapi fires a webhook with the full transcript. Zap 2 catches it, uses AI to write a structured call note, and posts it to HubSpot.</p>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-icon slack">💬</div>
+          <div class="flow-body">
+            <h4>AE is notified in Slack — if qualified</h4>
+            <p>If the AI scored the call as qualified, a formatted message is posted to the AE channel with the pain point, qualification signal, and a direct link to the HubSpot deal.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- ── IN DEPTH ── -->
+    <div class="section">
+      <div class="section-label">In Depth</div>
+      <h2>How each piece works</h2>
+
+      <!-- Zap 1 -->
+      <div class="card" style="margin-top:24px;">
+        <h3><span style="background:#ff4a00;border-radius:6px;padding:2px 10px;font-size:13px;color:#fff;">ZAP 1</span> HubSpot Deal Stage → Vapi Call</h3>
+        <p style="margin-bottom:16px;">This Zap is the outbound trigger. It runs entirely behind the scenes the moment a deal is moved.</p>
+        <ul class="steps" style="margin-top:8px;">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>HubSpot — Updated Deal (trigger)</h4>
+              <p>Polls HubSpot for deal changes. A filter step checks that the deal stage matches the target ID — any other stage change is ignored.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>HubSpot — Find Associated Contact</h4>
+              <p>The deal trigger doesn't include contact data. This step looks up the contact linked to the deal and pulls name, phone, email, company, and lead source.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>Formatter by Zapier — Format Phone to E.164</h4>
+              <p>Vapi requires phone numbers in E.164 format (+15551234567). HubSpot stores them inconsistently — this step normalises the number before the API call.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>Webhooks by Zapier — POST to Vapi /call/phone</h4>
+              <p>Fires the call. Passes the prospect's phone, name, and email in the <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">customer</code> object. Passes company and lead source via <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">assistantOverrides.variableValues</code> so the AI can reference them in conversation. The HubSpot deal ID is stored in <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">metadata</code> so Zap 2 knows which deal to update.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Vapi -->
+      <div class="card">
+        <h3><span style="background:#7c3aed;border-radius:6px;padding:2px 10px;font-size:13px;color:#fff;">VAPI</span> AI Voice Agent — Marcus</h3>
+        <p style="margin-bottom:16px;">Vapi handles the actual phone call using a pre-configured AI assistant. The system prompt is templated — all prospect data injected at call time from Zap 1.</p>
+        <table>
+          <tr><th>Variable</th><th>Source</th><th>Used for</th></tr>
+          <tr><td><code style="font-size:12px;">{{customer.name}}</code></td><td>HubSpot contact</td><td>Personalised greeting</td></tr>
+          <tr><td><code style="font-size:12px;">{{customer.email}}</code></td><td>HubSpot contact</td><td>Confirmed at end of call</td></tr>
+          <tr><td><code style="font-size:12px;">{{company}}</code></td><td>HubSpot contact</td><td>Referenced during intro</td></tr>
+          <tr><td><code style="font-size:12px;">{{leadSource}}</code></td><td>HubSpot contact</td><td>Context for how they came in</td></tr>
+        </table>
+        <p style="margin-top:16px;">The AI asks three qualification questions: current Google Ads usage, business type, and decision-making authority. At the end of the call it confirms the best email on file. The full transcript is sent to Zap 2 via webhook when the call ends.</p>
+      </div>
+
+      <!-- Zap 2 -->
+      <div class="card">
+        <h3><span style="background:#ff4a00;border-radius:6px;padding:2px 10px;font-size:13px;color:#fff;">ZAP 2</span> Vapi Webhook → HubSpot Note + Slack</h3>
+        <p style="margin-bottom:16px;">This Zap is always listening. It receives every Vapi event, filters to just the end-of-call report, and processes the result.</p>
+        <ul class="steps" style="margin-top:8px;">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>Webhooks — Catch Hook (trigger)</h4>
+              <p>Receives all Vapi events. Immediately filtered so only <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">end-of-call-report</code> events continue — transcript chunks and status pings are dropped.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>Code by Zapier — Extract Deal ID</h4>
+              <p>Zapier's HubSpot trigger returns a compound string instead of a plain deal ID. A single line of JavaScript extracts the real ID: <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">compound.split('-')[0]</code>.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>AI by Zapier — Generate Structured Call Note</h4>
+              <p>Feeds the raw transcript into an AI prompt that produces a clean, professional note with five sections: Pain Point, Objection, Qualification Signal, Next Step, and Disposition. The AI paraphrases — it does not quote verbatim.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>HubSpot — Create Note Engagement on Deal</h4>
+              <p>Posts the AI-generated note directly to the deal in HubSpot. Associated via the extracted deal ID. Any AE viewing the deal sees the full call summary immediately.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h4>Filter — Qualified only</h4>
+              <p>Checks Vapi's <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">successEvaluation</code> field. Only qualified leads continue to Slack. Unqualified calls still get their HubSpot note — the AE just isn't pinged.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">6</div>
+            <div class="step-body">
+              <h4>Slack — Send Channel Message to #ae-leads</h4>
+              <p>Posts a formatted alert with contact name, deal name, all five AI note sections, and a direct link to the HubSpot deal. The AE can react to claim the lead or reply in thread.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- ── CHALLENGES ── -->
+    <div class="section">
+      <div class="section-label">Challenges Encountered</div>
+      <h2>What broke and how we fixed it</h2>
+      <p>Building this surfaced several non-obvious Zapier, HubSpot, and Vapi quirks. Here are the most significant ones.</p>
+
+      <div style="margin-top:28px;">
+
+        <div class="challenge">
+          <h3>1. HubSpot deal ID was a compound string, not a plain number</h3>
+          <p class="problem">Zapier's HubSpot "Updated Deal" trigger returns a value in the format <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">dealId-stageId-timestampMs</code> (e.g. <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">58208201305-<your-hubspot-deal-stage-id>-1780009240278</code>). We assumed the last segment was the deal ID — it's actually a Unix timestamp in milliseconds. HubSpot's API rejected every attempt to create an engagement because the ID was invalid.</p>
+          <div class="fix"><strong>Fix:</strong> Added a Code by Zapier step with <code>compound.split('-')[0]</code> to extract the first segment, which is the real deal ID.</div>
+        </div>
+
+        <div class="challenge">
+          <h3>2. Zapier filter was pointing at a blank placeholder field</h3>
+          <p class="problem">The filter checking for <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">end-of-call-report</code> was configured against a generic "Field 1" with no data. Every call was being silently filtered out — no errors, no Zap runs, just nothing happening.</p>
+          <div class="fix"><strong>Fix:</strong> Re-mapped the filter to the correct field by searching the dropdown for the field whose sample value was <code>end-of-call-report</code>. Zapier flattens nested JSON field names, so the correct field appeared as "Message Type" not <code>message.type</code>.</div>
+        </div>
+
+        <div class="challenge">
+          <h3>3. HubSpot engagement association silently failing</h3>
+          <p class="problem">Notes were being created in HubSpot but not linked to any deal. The <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">haltIfAssociationsErrors</code> setting was <code>false</code> by default — HubSpot was swallowing the association error and creating orphaned notes.</p>
+          <div class="fix"><strong>Fix:</strong> Set <code>haltIfAssociationsErrors</code> to <code>true</code> to surface the real error. Separately, the <code>dealIds</code> field was in "line item" mode which injected a stray index <code>1</code> alongside the deal ID — switched to Custom mode to pass a single plain value.</div>
+        </div>
+
+        <div class="challenge">
+          <h3>4. Email, company, and lead source not reaching the AI assistant</h3>
+          <p class="problem">The Vapi system prompt referenced <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">{{customer.email}}</code>, <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">{{company}}</code>, and <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">{{leadSource}}</code> — but Zap 1 was only sending <code>number</code> and <code>name</code>. The AI was confirming a hallucinated email address at the end of every call.</p>
+          <div class="fix"><strong>Fix:</strong> Added <code>email</code> to the <code>customer</code> object in the POST body. Added <code>company</code> and <code>leadSource</code> via <code>assistantOverrides.variableValues</code> — this is Vapi's mechanism for injecting custom variables into a system prompt at call time.</div>
+        </div>
+
+        <div class="challenge">
+          <h3>5. AI call notes were vague and repetitive</h3>
+          <p class="problem">The AI by Zapier step was receiving <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">message.summary</code> (Vapi's pre-generated summary) as its input and just echoed it back. The notes contained raw transcript quotes and were not useful to an AE.</p>
+          <div class="fix"><strong>Fix:</strong> Switched the input to <code>message.transcript</code> (the full raw conversation) and rewrote the prompt to instruct the AI to paraphrase in professional language across five structured sections. The AI now produces clean, actionable notes a rep can act on immediately.</div>
+        </div>
+
+        <div class="challenge">
+          <h3>6. Duplicate Zap 2 runs per call</h3>
+          <p class="problem">Vapi fires multiple webhook events to the same URL during a single call — call started, transcript chunks, and end-of-call report. Without a filter, Zap 2 was triggering on every event, creating multiple partial notes per call.</p>
+          <div class="fix"><strong>Fix:</strong> Added a Filter by Zapier step immediately after the trigger: only continue if <code>message.type</code> exactly matches <code>end-of-call-report</code>. All other events are dropped before any actions run.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- ── WHAT'S NEXT ── -->
+    <div class="section">
+      <div class="section-label">What's Next</div>
+      <h2>Known limitations &amp; planned improvements</h2>
+      <table>
+        <tr><th>Item</th><th>Status</th><th>Notes</th></tr>
+        <tr>
+          <td>Instant trigger on deal stage change</td>
+          <td><span class="tag yellow">Planned</span></td>
+          <td>Current trigger polls every 5–15 min. Fix: HubSpot Workflow → Zapier Catch Hook for 1–3 second triggering.</td>
+        </tr>
+        <tr>
+          <td>Duplicate call prevention</td>
+          <td><span class="tag yellow">Planned</span></td>
+          <td>If a deal stage is toggled back and forth, Zap 1 fires again. A HubSpot deal property gate will prevent repeat calls.</td>
+        </tr>
+        <tr>
+          <td>SMS/WhatsApp fallback</td>
+          <td><span class="tag blue">Idea</span></td>
+          <td>If the call goes unanswered, send a follow-up message via SMS or WhatsApp.</td>
+        </tr>
+        <tr>
+          <td>Qualification reporting dashboard</td>
+          <td><span class="tag blue">Idea</span></td>
+          <td>Track qualification rate, call duration, and pipeline value generated across all calls.</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;padding:40px 0 20px;color:#334155;font-size:13px;">
+      Built by <strong style="color:#64748b;">Diego Cortes</strong> — B2B SaaS sales professional who builds AI-powered tools for revenue teams.
+    </div>
+
+  </div>
+</body>
+</html>
