@@ -149,4 +149,4 @@ HubSpot Deal (stage change)
 
 ## About
 
-Built by **Diego Cortes** — ex-founding AE and AI sales systems consultant. I design and build automated revenue workflows for SMB sales teams.
+Built by **Diego Cortes** — B2B SaaS sales professional and AI automation consultant. I build automated revenue workflows for SMB sales teams.
