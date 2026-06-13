@@ -4,7 +4,7 @@
 
 | Key | Value |
 |-----|-------|
-| Zap 2 Catch Hook URL | <your-zapier-webhook-url> |
+| Zap 2 Catch Hook URL | `<your-zapier-webhook-url>` |
 | Vapi Assistant ID | <your-vapi-assistant-id> |
 | Vapi Phone Number ID | <your-vapi-phone-number-id> |
 | HubSpot Trigger Deal Stage ID | <your-hubspot-deal-stage-id> |

@@ -12,7 +12,7 @@ Inbound leads go cold fast. Sales teams waste hours manually calling unqualified
 
 An automated qualification system that triggers an AI phone call the moment a HubSpot deal reaches the right pipeline stage, conducts a live AI-powered conversation, and logs the outcome back into HubSpot — without a human touching it.
 
-This build uses **Zapier** as the orchestration layer, replicating a production Make.com workflow. Built as part of a Zapier evaluation to compare the two platforms side-by-side.
+This build uses **Zapier** as the orchestration layer, replicating a production Make.com workflow. Built as a hands-on platform evaluation — comparing Zapier and Make.com as orchestration layers for AI sales automation to inform future client recommendations.
 
 ---
 
@@ -130,7 +130,7 @@ HubSpot Deal (stage change)
 
 ## What I Learned
 
-- How to replicate a production Make.com workflow in Zapier and where the two platforms differ (polling vs. instant triggers, field mapping UX, task consumption model)
+- Where Zapier and Make.com differ in practice for this type of workflow: polling vs. instant triggers, field mapping UX, and task consumption model — hands-on findings from running both platforms in parallel
 - Zapier's HubSpot deal trigger requires an extra association lookup step — the deal object doesn't include contact data natively
 - Vapi sends multiple event types to a single webhook URL — filtering for `end-of-call-report` in Zapier is essential or you get spurious Zap runs
 - The `metadata` field on a Vapi call is the cleanest way to carry CRM context through a voice call and back into your automation
@@ -149,4 +149,4 @@ HubSpot Deal (stage change)
 
 ## About
 
-Built by **Diego Cortes** — B2B SaaS sales professional who builds AI-powered tools for revenue teams.
+Built by **Diego Cortes** — ex-founding AE and AI sales systems consultant. I design and build automated revenue workflows for SMB sales teams.

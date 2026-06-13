@@ -4,7 +4,7 @@
 
 Replicating an existing Make.com AI SDR outbound call workflow using Zapier as the orchestration layer. This is a no-code configuration project — no application code, only Zapier Zap config, Vapi assistant config, and HubSpot config.
 
-**Motivation:** Evaluation/comparison for a Zapier job interview. The Make.com workflow is already running in production; this Zapier version is built in parallel to compare ease-of-use.
+**Motivation:** Platform evaluation conducted as part of consultancy work — comparing Zapier vs. Make.com as orchestration layers for AI sales automation workflows. A Make.com version of this workflow was already running in production for a client; the Zapier build was done in parallel to assess ease-of-use, task economics, and integration depth, to inform future client platform recommendations.
 
 ## Existing Make.com Flow (source of truth)
 

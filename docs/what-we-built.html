@@ -75,7 +75,7 @@ HubSpot Deal (stage change)
 
 <h3>Zap 2 — "Log Vapi Call Result to HubSpot"</h3>
 <ul>
-  <li><span class="label">Trigger:</span> Webhooks by Zapier — Catch Hook (URL: <code><your-zapier-webhook-url></code>)</li>
+  <li><span class="label">Trigger:</span> Webhooks by Zapier — Catch Hook (URL: <code>&lt;your-zapier-webhook-url&gt;</code>)</li>
   <li><span class="label">Filter:</span> Only continue when <code>message.type</code> equals <code>end-of-call-report</code></li>
   <li><span class="label">Action 1:</span> Formatter by Zapier — build structured note from transcript, summary, and disposition</li>
   <li><span class="label">Action 2:</span> HubSpot — Create Engagement (Call) on the deal</li>
@@ -112,7 +112,7 @@ HubSpot Deal (stage change)
   <tr><td>Vapi Assistant ID</td><td><code><your-vapi-assistant-id></code></td></tr>
   <tr><td>Vapi Phone Number ID</td><td><code><your-vapi-phone-number-id></code></td></tr>
   <tr><td>HubSpot Trigger Stage ID</td><td><code><your-hubspot-deal-stage-id></code></td></tr>
-  <tr><td>Zap 2 Catch Hook URL</td><td><code><your-zapier-webhook-url></code></td></tr>
+  <tr><td>Zap 2 Catch Hook URL</td><td><code>&lt;your-zapier-webhook-url&gt;</code></td></tr>
 </table>
 
 <h2>Open Decisions</h2>
