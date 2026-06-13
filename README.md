@@ -1,6 +1,6 @@
 # Zapier AI SDR Caller
 
-AI-powered SDR system that qualifies leads via automated phone calls — built with Zapier, Vapi, and HubSpot
+AI-powered SDR system that qualifies leads via automated phone calls - built with Zapier, Vapi, and HubSpot
 
 ---
 
@@ -10,9 +10,9 @@ Inbound leads go cold fast. Sales teams waste hours manually calling unqualified
 
 ## The Solution
 
-An automated qualification system that triggers an AI phone call the moment a HubSpot deal reaches the right pipeline stage, conducts a live AI-powered conversation, and logs the outcome back into HubSpot — without a human touching it.
+An automated qualification system that triggers an AI phone call the moment a HubSpot deal reaches the right pipeline stage, conducts a live AI-powered conversation, and logs the outcome back into HubSpot - without a human touching it.
 
-This build uses **Zapier** as the orchestration layer, replicating a production Make.com workflow. Built as a hands-on platform evaluation — comparing Zapier and Make.com as orchestration layers for AI sales automation to inform future client recommendations.
+This build uses **Zapier** as the orchestration layer, replicating a production Make.com workflow. Built as a hands-on platform evaluation - comparing Zapier and Make.com as orchestration layers for AI sales automation to inform future client recommendations.
 
 ---
 
@@ -21,25 +21,25 @@ This build uses **Zapier** as the orchestration layer, replicating a production 
 ```mermaid
 flowchart TD
     A[HubSpot Deal reaches target stage] --> B[Zap 1 triggers]
-    B --> C[HubSpot — Find Associated Contact]
-    C --> D[Webhooks by Zapier — POST to Vapi /call]
+    B --> C[HubSpot - Find Associated Contact]
+    C --> D[Webhooks by Zapier - POST to Vapi /call]
     D --> E[Vapi places live phone call to lead]
     E --> F[AI conducts qualification conversation]
-    F --> G[Call ends — Vapi fires end-of-call-report webhook]
+    F --> G[Call ends - Vapi fires end-of-call-report webhook]
     G --> H[Zap 2 catches webhook]
     H --> I[Filter: end-of-call-report only]
-    I --> J[AI by Zapier — generate structured call note]
-    J --> K[HubSpot — Create Call Engagement on Deal]
+    I --> J[AI by Zapier - generate structured call note]
+    J --> K[HubSpot - Create Call Engagement on Deal]
     K --> L{Qualified?}
-    L -->|Yes| M[Slack — Notify AE channel]
-    L -->|No| N[Done — note logged, no AE alert]
+    L -->|Yes| M[Slack - Notify AE channel]
+    L -->|No| N[Done - note logged, no AE alert]
 ```
 
 ---
 
 ## Zap Architecture
 
-### Zap 1 — HubSpot Deal Stage → Trigger Vapi Call
+### Zap 1 - HubSpot Deal Stage → Trigger Vapi Call
 
 | Step | App | Action |
 |------|-----|--------|
@@ -49,7 +49,7 @@ flowchart TD
 | Action 2 | Formatter by Zapier | Format phone to E.164 |
 | Action 3 | Webhooks by Zapier | POST to Vapi `/call/phone` with email, company, lead source, and deal ID in metadata |
 
-### Zap 2 — Vapi Webhook → HubSpot Call Note + AE Alert
+### Zap 2 - Vapi Webhook → HubSpot Call Note + AE Alert
 
 | Step | App | Action |
 |------|-----|--------|
@@ -68,9 +68,9 @@ flowchart TD
 
 | Tool | Role |
 |------|------|
-| **HubSpot** | CRM — deal stages, contact data, call note logging |
-| **Zapier** | Orchestration — detects deal stage changes, chains actions across tools |
-| **Vapi** | AI voice agent — places and conducts the live qualification call |
+| **HubSpot** | CRM - deal stages, contact data, call note logging |
+| **Zapier** | Orchestration - detects deal stage changes, chains actions across tools |
+| **Vapi** | AI voice agent - places and conducts the live qualification call |
 | **AI by Zapier** | Formats raw call transcript into a structured HubSpot note |
 | **Slack** | Notifies the AE channel when a lead qualifies |
 
@@ -78,7 +78,7 @@ flowchart TD
 
 ## Key Data Flow
 
-The `hubspot_deal_id` passed as Vapi call metadata is the linchpin — it's how Zap 2 knows which HubSpot deal to update when the call finishes.
+The `hubspot_deal_id` passed as Vapi call metadata is the linchpin - it's how Zap 2 knows which HubSpot deal to update when the call finishes.
 
 ```
 HubSpot Deal (stage change)
@@ -94,27 +94,27 @@ HubSpot Deal (stage change)
 
 ## How It Works
 
-1. **Deal stage changes in HubSpot** — manually or via another automation
-2. **Zap 1 triggers** — detects the stage change and looks up the associated contact
-3. **Vapi call is placed** — the AI dials the lead within minutes, deal ID passed as metadata
-4. **AI qualifies the lead** — conducts a structured conversation using a custom Vapi assistant
-5. **Call ends, Vapi fires webhook** — `end-of-call-report` sent to Zap 2's catch hook URL
-6. **Zap 2 processes the result** — AI by Zapier formats a call note from the transcript
-7. **HubSpot is updated** — structured call note logged on the deal with outcome and summary
-8. **AE is alerted in Slack** — only if the lead passed qualification
+1. **Deal stage changes in HubSpot** - manually or via another automation
+2. **Zap 1 triggers** - detects the stage change and looks up the associated contact
+3. **Vapi call is placed** - the AI dials the lead within minutes, deal ID passed as metadata
+4. **AI qualifies the lead** - conducts a structured conversation using a custom Vapi assistant
+5. **Call ends, Vapi fires webhook** - `end-of-call-report` sent to Zap 2's catch hook URL
+6. **Zap 2 processes the result** - AI by Zapier formats a call note from the transcript
+7. **HubSpot is updated** - structured call note logged on the deal with outcome and summary
+8. **AE is alerted in Slack** - only if the lead passed qualification
 
 ---
 
 ## Screenshots
 
-### Vapi — AI Voice Agent Configuration
-> The AI voice agent setup — model, system prompt, and call handling logic.
+### Vapi - AI Voice Agent Configuration
+> The AI voice agent setup - model, system prompt, and call handling logic.
 
 <img width="1217" height="682" alt="image" src="https://github.com/user-attachments/assets/87d86719-41c2-4b45-8d93-45586ec1588b" />
 
 ---
 
-### HubSpot — Logged Call Note
+### HubSpot - Logged Call Note
 > The structured note automatically written back into the CRM after the call completes, including qualification status and conversation summary.
 
 <img width="1137" height="470" alt="image" src="https://github.com/user-attachments/assets/63de1b02-de09-46d3-83b8-51621b4613d1" />
@@ -128,25 +128,17 @@ HubSpot Deal (stage change)
 
 ---
 
-## What I Learned
+## Insights
 
-- Where Zapier and Make.com differ in practice for this type of workflow: polling vs. instant triggers, field mapping UX, and task consumption model — hands-on findings from running both platforms in parallel
-- Zapier's HubSpot deal trigger requires an extra association lookup step — the deal object doesn't include contact data natively
-- Vapi sends multiple event types to a single webhook URL — filtering for `end-of-call-report` in Zapier is essential or you get spurious Zap runs
+- Where Zapier and Make.com differ in practice for this type of workflow: polling vs. instant triggers, field mapping UX, and task consumption model - hands-on findings from running both platforms in parallel
+- Zapier's HubSpot deal trigger requires an extra association lookup step - the deal object doesn't include contact data natively
+- Vapi sends multiple event types to a single webhook URL - filtering for `end-of-call-report` in Zapier is essential or you get spurious Zap runs
 - The `metadata` field on a Vapi call is the cleanest way to carry CRM context through a voice call and back into your automation
 - AI by Zapier can replace a Formatter step for unstructured-to-structured transformation, reducing prompt engineering overhead
 
----
-
-## What I'd Build Next
-
-- [ ] Add a HubSpot deal property gate (`ai_call_triggered`) to prevent duplicate calls if the stage changes more than once
-- [ ] A/B test qualification scripts to optimize conversion rate
-- [ ] Add an SMS/WhatsApp fallback if the call goes unanswered
-- [ ] Build a dashboard to track qualification rate, call duration, and pipeline value generated
 
 ---
 
 ## About
 
-Built by **Diego Cortes** — B2B SaaS sales professional and AI automation consultant. I build automated revenue workflows for SMB sales teams.
+Built by **Diego Cortes** - B2B SaaS sales professional and AI automation consultant. I build automated revenue workflows for SMB sales teams.

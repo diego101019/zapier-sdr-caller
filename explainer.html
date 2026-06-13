@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zapier AI SDR Caller — Full Explainer</title>
+  <title>Zapier AI SDR Caller - Full Explainer</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -261,7 +261,7 @@
   <div class="hero">
     <div class="badge">AI SDR System</div>
     <h1>Zapier AI SDR Caller</h1>
-    <p>An automated outbound call system that qualifies leads the moment a HubSpot deal reaches the right stage — built with Zapier, Vapi, and HubSpot.</p>
+    <p>An automated outbound call system that qualifies leads the moment a HubSpot deal reaches the right stage - built with Zapier, Vapi, and HubSpot.</p>
     <div class="stack" style="justify-content:center; margin-top:28px;">
       <div class="pill"><span>🟠</span> Zapier</div>
       <div class="pill"><span>🟣</span> Vapi</div>
@@ -275,9 +275,9 @@
     <!-- ── THE PROBLEM ── -->
     <div class="section">
       <div class="section-label">The Problem</div>
-      <h2>Leads go cold — fast</h2>
+      <h2>Leads go cold - fast</h2>
       <p>Inbound leads lose interest within minutes of filling out a form. Most sales teams can't respond fast enough, and when they do, reps waste time on unqualified prospects. Hiring a full SDR team to handle qualification isn't viable for most companies.</p>
-      <p>This system solves that by placing an AI-powered phone call automatically — no human trigger required — the moment a HubSpot deal reaches the qualifying stage.</p>
+      <p>This system solves that by placing an AI-powered phone call automatically - no human trigger required - the moment a HubSpot deal reaches the qualifying stage.</p>
     </div>
 
     <hr />
@@ -286,7 +286,7 @@
     <div class="section">
       <div class="section-label">High Level Overview</div>
       <h2>What it does in one sentence</h2>
-      <p>When a deal moves to the right stage in HubSpot, the system automatically calls the prospect, has a live AI qualification conversation, and logs a structured note back into HubSpot — then alerts the AE in Slack if the lead qualifies.</p>
+      <p>When a deal moves to the right stage in HubSpot, the system automatically calls the prospect, has a live AI qualification conversation, and logs a structured note back into HubSpot - then alerts the AE in Slack if the lead qualifies.</p>
 
       <div class="flow" style="margin-top:28px;">
         <div class="flow-title">End-to-end flow</div>
@@ -330,7 +330,7 @@
         <div class="flow-step">
           <div class="flow-icon slack">💬</div>
           <div class="flow-body">
-            <h4>AE is notified in Slack — if qualified</h4>
+            <h4>AE is notified in Slack - if qualified</h4>
             <p>If the AI scored the call as qualified, a formatted message is posted to the AE channel with the pain point, qualification signal, and a direct link to the HubSpot deal.</p>
           </div>
         </div>
@@ -352,28 +352,28 @@
           <li>
             <div class="step-num">1</div>
             <div class="step-body">
-              <h4>HubSpot — Updated Deal (trigger)</h4>
-              <p>Polls HubSpot for deal changes. A filter step checks that the deal stage matches the target ID — any other stage change is ignored.</p>
+              <h4>HubSpot - Updated Deal (trigger)</h4>
+              <p>Polls HubSpot for deal changes. A filter step checks that the deal stage matches the target ID - any other stage change is ignored.</p>
             </div>
           </li>
           <li>
             <div class="step-num">2</div>
             <div class="step-body">
-              <h4>HubSpot — Find Associated Contact</h4>
+              <h4>HubSpot - Find Associated Contact</h4>
               <p>The deal trigger doesn't include contact data. This step looks up the contact linked to the deal and pulls name, phone, email, company, and lead source.</p>
             </div>
           </li>
           <li>
             <div class="step-num">3</div>
             <div class="step-body">
-              <h4>Formatter by Zapier — Format Phone to E.164</h4>
-              <p>Vapi requires phone numbers in E.164 format (+15551234567). HubSpot stores them inconsistently — this step normalises the number before the API call.</p>
+              <h4>Formatter by Zapier - Format Phone to E.164</h4>
+              <p>Vapi requires phone numbers in E.164 format (+15551234567). HubSpot stores them inconsistently - this step normalises the number before the API call.</p>
             </div>
           </li>
           <li>
             <div class="step-num">4</div>
             <div class="step-body">
-              <h4>Webhooks by Zapier — POST to Vapi /call/phone</h4>
+              <h4>Webhooks by Zapier - POST to Vapi /call/phone</h4>
               <p>Fires the call. Passes the prospect's phone, name, and email in the <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">customer</code> object. Passes company and lead source via <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">assistantOverrides.variableValues</code> so the AI can reference them in conversation. The HubSpot deal ID is stored in <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">metadata</code> so Zap 2 knows which deal to update.</p>
             </div>
           </li>
@@ -382,8 +382,8 @@
 
       <!-- Vapi -->
       <div class="card">
-        <h3><span style="background:#7c3aed;border-radius:6px;padding:2px 10px;font-size:13px;color:#fff;">VAPI</span> AI Voice Agent — Marcus</h3>
-        <p style="margin-bottom:16px;">Vapi handles the actual phone call using a pre-configured AI assistant. The system prompt is templated — all prospect data injected at call time from Zap 1.</p>
+        <h3><span style="background:#7c3aed;border-radius:6px;padding:2px 10px;font-size:13px;color:#fff;">VAPI</span> AI Voice Agent - Marcus</h3>
+        <p style="margin-bottom:16px;">Vapi handles the actual phone call using a pre-configured AI assistant. The system prompt is templated - all prospect data injected at call time from Zap 1.</p>
         <table>
           <tr><th>Variable</th><th>Source</th><th>Used for</th></tr>
           <tr><td><code style="font-size:12px;">{{customer.name}}</code></td><td>HubSpot contact</td><td>Personalised greeting</td></tr>
@@ -402,42 +402,42 @@
           <li>
             <div class="step-num">1</div>
             <div class="step-body">
-              <h4>Webhooks — Catch Hook (trigger)</h4>
-              <p>Receives all Vapi events. Immediately filtered so only <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">end-of-call-report</code> events continue — transcript chunks and status pings are dropped.</p>
+              <h4>Webhooks - Catch Hook (trigger)</h4>
+              <p>Receives all Vapi events. Immediately filtered so only <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">end-of-call-report</code> events continue - transcript chunks and status pings are dropped.</p>
             </div>
           </li>
           <li>
             <div class="step-num">2</div>
             <div class="step-body">
-              <h4>Code by Zapier — Extract Deal ID</h4>
+              <h4>Code by Zapier - Extract Deal ID</h4>
               <p>Zapier's HubSpot trigger returns a compound string instead of a plain deal ID. A single line of JavaScript extracts the real ID: <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">compound.split('-')[0]</code>.</p>
             </div>
           </li>
           <li>
             <div class="step-num">3</div>
             <div class="step-body">
-              <h4>AI by Zapier — Generate Structured Call Note</h4>
-              <p>Feeds the raw transcript into an AI prompt that produces a clean, professional note with five sections: Pain Point, Objection, Qualification Signal, Next Step, and Disposition. The AI paraphrases — it does not quote verbatim.</p>
+              <h4>AI by Zapier - Generate Structured Call Note</h4>
+              <p>Feeds the raw transcript into an AI prompt that produces a clean, professional note with five sections: Pain Point, Objection, Qualification Signal, Next Step, and Disposition. The AI paraphrases - it does not quote verbatim.</p>
             </div>
           </li>
           <li>
             <div class="step-num">4</div>
             <div class="step-body">
-              <h4>HubSpot — Create Note Engagement on Deal</h4>
+              <h4>HubSpot - Create Note Engagement on Deal</h4>
               <p>Posts the AI-generated note directly to the deal in HubSpot. Associated via the extracted deal ID. Any AE viewing the deal sees the full call summary immediately.</p>
             </div>
           </li>
           <li>
             <div class="step-num">5</div>
             <div class="step-body">
-              <h4>Filter — Qualified only</h4>
-              <p>Checks Vapi's <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">successEvaluation</code> field. Only qualified leads continue to Slack. Unqualified calls still get their HubSpot note — the AE just isn't pinged.</p>
+              <h4>Filter - Qualified only</h4>
+              <p>Checks Vapi's <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">successEvaluation</code> field. Only qualified leads continue to Slack. Unqualified calls still get their HubSpot note - the AE just isn't pinged.</p>
             </div>
           </li>
           <li>
             <div class="step-num">6</div>
             <div class="step-body">
-              <h4>Slack — Send Channel Message to #ae-leads</h4>
+              <h4>Slack - Send Channel Message to #ae-leads</h4>
               <p>Posts a formatted alert with contact name, deal name, all five AI note sections, and a direct link to the HubSpot deal. The AE can react to claim the lead or reply in thread.</p>
             </div>
           </li>
@@ -457,26 +457,26 @@
 
         <div class="challenge">
           <h3>1. HubSpot deal ID was a compound string, not a plain number</h3>
-          <p class="problem">Zapier's HubSpot "Updated Deal" trigger returns a value in the format <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">dealId-stageId-timestampMs</code> (e.g. <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">58208201305-<your-hubspot-deal-stage-id>-1780009240278</code>). We assumed the last segment was the deal ID — it's actually a Unix timestamp in milliseconds. HubSpot's API rejected every attempt to create an engagement because the ID was invalid.</p>
+          <p class="problem">Zapier's HubSpot "Updated Deal" trigger returns a value in the format <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">dealId-stageId-timestampMs</code> (e.g. <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">58208201305-<your-hubspot-deal-stage-id>-1780009240278</code>). We assumed the last segment was the deal ID - it's actually a Unix timestamp in milliseconds. HubSpot's API rejected every attempt to create an engagement because the ID was invalid.</p>
           <div class="fix"><strong>Fix:</strong> Added a Code by Zapier step with <code>compound.split('-')[0]</code> to extract the first segment, which is the real deal ID.</div>
         </div>
 
         <div class="challenge">
           <h3>2. Zapier filter was pointing at a blank placeholder field</h3>
-          <p class="problem">The filter checking for <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">end-of-call-report</code> was configured against a generic "Field 1" with no data. Every call was being silently filtered out — no errors, no Zap runs, just nothing happening.</p>
+          <p class="problem">The filter checking for <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">end-of-call-report</code> was configured against a generic "Field 1" with no data. Every call was being silently filtered out - no errors, no Zap runs, just nothing happening.</p>
           <div class="fix"><strong>Fix:</strong> Re-mapped the filter to the correct field by searching the dropdown for the field whose sample value was <code>end-of-call-report</code>. Zapier flattens nested JSON field names, so the correct field appeared as "Message Type" not <code>message.type</code>.</div>
         </div>
 
         <div class="challenge">
           <h3>3. HubSpot engagement association silently failing</h3>
-          <p class="problem">Notes were being created in HubSpot but not linked to any deal. The <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">haltIfAssociationsErrors</code> setting was <code>false</code> by default — HubSpot was swallowing the association error and creating orphaned notes.</p>
-          <div class="fix"><strong>Fix:</strong> Set <code>haltIfAssociationsErrors</code> to <code>true</code> to surface the real error. Separately, the <code>dealIds</code> field was in "line item" mode which injected a stray index <code>1</code> alongside the deal ID — switched to Custom mode to pass a single plain value.</div>
+          <p class="problem">Notes were being created in HubSpot but not linked to any deal. The <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">haltIfAssociationsErrors</code> setting was <code>false</code> by default - HubSpot was swallowing the association error and creating orphaned notes.</p>
+          <div class="fix"><strong>Fix:</strong> Set <code>haltIfAssociationsErrors</code> to <code>true</code> to surface the real error. Separately, the <code>dealIds</code> field was in "line item" mode which injected a stray index <code>1</code> alongside the deal ID - switched to Custom mode to pass a single plain value.</div>
         </div>
 
         <div class="challenge">
           <h3>4. Email, company, and lead source not reaching the AI assistant</h3>
-          <p class="problem">The Vapi system prompt referenced <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">{{customer.email}}</code>, <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">{{company}}</code>, and <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">{{leadSource}}</code> — but Zap 1 was only sending <code>number</code> and <code>name</code>. The AI was confirming a hallucinated email address at the end of every call.</p>
-          <div class="fix"><strong>Fix:</strong> Added <code>email</code> to the <code>customer</code> object in the POST body. Added <code>company</code> and <code>leadSource</code> via <code>assistantOverrides.variableValues</code> — this is Vapi's mechanism for injecting custom variables into a system prompt at call time.</div>
+          <p class="problem">The Vapi system prompt referenced <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">{{customer.email}}</code>, <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">{{company}}</code>, and <code style="background:#0d1117;padding:1px 6px;border-radius:4px;font-size:12px;">{{leadSource}}</code> - but Zap 1 was only sending <code>number</code> and <code>name</code>. The AI was confirming a hallucinated email address at the end of every call.</p>
+          <div class="fix"><strong>Fix:</strong> Added <code>email</code> to the <code>customer</code> object in the POST body. Added <code>company</code> and <code>leadSource</code> via <code>assistantOverrides.variableValues</code> - this is Vapi's mechanism for injecting custom variables into a system prompt at call time.</div>
         </div>
 
         <div class="challenge">
@@ -487,7 +487,7 @@
 
         <div class="challenge">
           <h3>6. Duplicate Zap 2 runs per call</h3>
-          <p class="problem">Vapi fires multiple webhook events to the same URL during a single call — call started, transcript chunks, and end-of-call report. Without a filter, Zap 2 was triggering on every event, creating multiple partial notes per call.</p>
+          <p class="problem">Vapi fires multiple webhook events to the same URL during a single call - call started, transcript chunks, and end-of-call report. Without a filter, Zap 2 was triggering on every event, creating multiple partial notes per call.</p>
           <div class="fix"><strong>Fix:</strong> Added a Filter by Zapier step immediately after the trigger: only continue if <code>message.type</code> exactly matches <code>end-of-call-report</code>. All other events are dropped before any actions run.</div>
         </div>
 
@@ -527,7 +527,7 @@
 
     <!-- Footer -->
     <div style="text-align:center;padding:40px 0 20px;color:#334155;font-size:13px;">
-      Built by <strong style="color:#64748b;">Diego Cortes</strong> — B2B SaaS sales professional and AI automation consultant. I build automated revenue workflows for SMB sales teams.
+      Built by <strong style="color:#64748b;">Diego Cortes</strong> - B2B SaaS sales professional and AI automation consultant. I build automated revenue workflows for SMB sales teams.
     </div>
 
   </div>
